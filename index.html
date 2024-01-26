@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera App</title>
+    <style>
+        #camera {
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center;
+        }
+
+        #photo {
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div id="camera">
+        <video id="video" width="100%" height="auto" autoplay></video>
+        <br>
+        <button id="capture" onclick="capturePhoto()">Capture</button>
+        <button id="save" onclick="savePhoto()">Save</button>
+    </div>
+    <img id="photo" alt="Captured Photo">
+
+    <script>
+        async function initCamera() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                const video = document.getElementById('video');
+                video.srcObject = stream;
+                video.play();
+            } catch (error) {
+                console.error("Error accessing the camera:", error);
+            }
+        }
+
+        function capturePhoto() {
+            var video = document.getElementById('video');
+            var canvas = document.createElement('canvas');
+            canvas.width = video.videoWidth;
+            canvas.height = video.videoHeight;
+            var context = canvas.getContext('2d');
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            var photo = document.getElementById('photo');
+            photo.src = canvas.toDataURL('image/png');
+        }
+
+        function savePhoto() {
+            var photo = document.getElementById('photo');
+            var link = document.createElement('a');
+            link.href = photo.src;
+            link.download = 'captured_photo.png';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+
+        initCamera();
+    </script>
+</body>
+</html>
+
+            
